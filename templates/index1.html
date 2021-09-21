@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="{{url_for('static',filename='jquery.js')}}"></script>
+    <style>
+        .input {
+            width: 30px;
+        }
+
+        .div {
+            width: 100px;
+            height: 100px;
+            background-color: #ccc;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 60px;
+            line-height: 100px;
+            border: 1px solid black;
+            text-align: center;
+            transition: all 0s;
+            -moz-transition: all 0s;
+            /* Firefox 4 */
+            -webkit-transition: all 0s;
+            /* Safari 和 Chrome */
+            -o-transition: all 0s;
+            /* Opera */
+        }
+
+        .eightPuzzles {
+            width: 320px;
+            display: table-cell;
+            position: relative;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 8px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #04263d;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+        }
+
+        .button:hover {
+            background-color: #054977
+        }
+
+        .button:active {
+            background-color: #054977;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+    </style>
+    <style>
+        .g6-tooltip {
+            border: 1px solid #8962FD;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #8962FD;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 8px;
+            box-shadow: rgb(219, 208, 254) 0px 0px 10px;
+            width: 180px;
+            height: 60px;
+            position: absolute;
+            left: -100px;
+            top: 100px
+        }
+    </style>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g6-3.5.0/dist/g6.min.js"></script>
+</head>
+
+<body>
+    <div style="position: absolute; height: 150px; width: 150px; background-color:#000000;border-radius: 0px; display: none; font-size: 36px;" id="infor">
+        <div style="height: 28%; width: 28%; float: left; background-color: azure; margin-top: 4%; margin-left: 4%;" id="infor1"></div>
+        <div style="height: 28%; width: 28%; float: left; background-color: azure; margin-top: 4%; margin-left: 4%;" id="infor2"></div>
+        <div style="height: 28%; width: 28%; float: right;background-color: azure; margin-top: 4%; margin-right: 4%;" id="infor3"></div>
+        <div style="height: 28%; width: 28%; float: left;background-color: azure; margin-top: 4%; margin-left: 4%;" id="infor4"></div>
+        <div style="height: 28%; width: 28%; float: left;background-color: azure; margin-top: 4%; margin-left: 4%;" id="infor5"></div>
+        <div style="height: 28%; width: 28%; float: right;background-color: azure; margin-top: 4%; margin-right: 4%;" id="infor6"></div>
+        <div style="height: 28%; width: 28%; float: left;background-color: azure; margin-top: 4%; margin-left: 4%;" id="infor7"></div>
+        <div style="height: 28%; width: 28%; float: left;background-color: azure; margin-top: 4%; margin-left: 4%;" id="infor8"></div>
+        <div style="height: 28%; width: 28%; float: right;background-color: azure; margin-top: 4%; margin-right: 4%;" id="infor9"></div>
+    </div>
+    <h1 style="margin:0 auto;">8数码问题</h1>
+    <hr />
+    <div style="float: left;">
+        <h3 style="margin:0 auto;">请输入初始状态：</h3>
+        <input type="number" name="num1" id="input1" class="input" value="1">
+        <input type="number" name="num2" id="input2" class="input" value="2">
+        <input type="number" name="num3" id="input3" class="input" value="3"><br />
+        <input type="number" name="num4" id="input4" class="input" value="4">
+        <input type="number" name="num5" id="input5" class="input" value="5">
+        <input type="number" name="num6" id="input6" class="input" value="6"><br />
+        <input type="number" name="num7" id="input7" class="input" value="8">
+        <input type="number" name="num8" id="input8" class="input" value="7">
+        <input type="number" name="num9" id="input9" class="input" value="0"><br />
+    </div>
+    <div style="float: left;">
+        <h3 style="margin:0 auto;">请输入最终状态：</h3>
+        <input type="number" name="num1" id="output1" class="input" value="1">
+        <input type="number" name="num2" id="output2" class="input" value="2">
+        <input type="number" name="num3" id="output3" class="input" value="3"><br />
+        <input type="number" name="num4" id="output4" class="input" value="8">
+        <input type="number" name="num5" id="output5" class="input" value="0">
+        <input type="number" name="num6" id="output6" class="input" value="4"><br />
+        <input type="number" name="num7" id="output7" class="input" value="7">
+        <input type="number" name="num8" id="output8" class="input" value="6">
+        <input type="number" name="num9" id="output9" class="input" value="5"><br />
+    </div>
+    <div>
+        <h3 style="margin:0 auto;">请选择启发函数：</h3>
+        <input type="radio" name="aaa" value="0" onclick="click1(this.value)"> 启发函数0<br>
+        <input type="radio" name="aaa" value="1" onclick="click1(this.value)"> 启发函数1<br>
+        <input type="radio" name="aaa" value="2" checked="true" onclick="click1(this.value)"> 启发函数2<br>
+        <input type="radio" name="aaa" value="3" onclick="click1(this.value)"> 启发函数3<br>
+    </div>
+    <br />
+    <button onclick="get_result()" class="button">确定</button>
+    <br /><br />
+    <hr />
+    <br />
+    <div style="float: left;">
+        <h2 style="margin:0 0;">过程演示</h2>
+        <div class="eightPuzzles">
+            <div id="0" class="div">0</div>
+            <div id="1" class="div">1</div>
+            <div id="2" class="div">2</div>
+            <div id="3" class="div">3</div>
+            <div id="4" class="div">4</div>
+            <div id="5" class="div">5</div>
+            <div id="6" class="div">6</div>
+            <div id="7" class="div">7</div>
+            <div id="8" class="div">8</div>
+        </div>
+    </div>
+    <div style="float: left;">
+        <h2 style="margin:0 0; width: 200px;">生成节点数</h2>
+        <br />
+        <h3 style="margin:0 0;" id="node_num">0</h3>
+        <h3 style="margin:0 0;">个</h3>
+    </div>
+    <div style="float: left;">
+        <h2 style="margin:0 0; width: 200px;">拓展节点数</h2>
+        <br />
+        <h3 style="margin:0 0;" id="node_num2">0</h3>
+        <h3 style="margin:0 0;">个</h3>
+    </div>
+    <div style="float: left;">
+        <h2 style="margin:0 0;">运行时间</h2>
+        <br />
+        <h3 style="margin:0 0;" id="cost_time">0</h3>
+        <h3 style="margin:0 0;">秒</h3>
+    </div>
+    <hr style="margin-top: 420px;" />
+    <div>
+        <h2 style="margin:0 0;">搜索生成树</h2>
+        <br />
+        <div id="container"></div>
+    </div>
+    <script>
+        var abc = document.getElementsByName("aaa");
+        function click1(v) {
+            for (var k = 0; k < 4; k++) {
+                if (abc[k].value == v) {
+                    abc[k].checked = true;
+                }
+                else {
+                    abc[k].checked = false;
+                }
+            }
+            aaa = $('input[name=aaa]:checked').val();
+        }
+
+
+        function EightPuzzles(option) {
+            this.startNode = option.startNode
+            this.timer = option.animateTime || 1000
+        }
+        EightPuzzles.prototype.calDom = function (node) {
+            node.forEach(function (item, index) {
+                item.forEach(function (obj, i) {
+                    $('#' + obj).css({ left: i * (100 + 2), top: index * (100 + 2) })
+                })
+            })
+        }
+        EightPuzzles.prototype.showDomMove = function (path) {
+            var _ = this
+            path.forEach(function (item, index) {
+                setTimeout(function (node) {
+                    this.calDom(node)
+                }.bind(_, item), index * _.timer)
+            })
+        }
+
+        //转变json格式
+        function convertToTreeData(data, pid) {
+            const result = [];
+            let temp = [];
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].parent === pid) {
+                    const obj = { 'search': data[i].search, 'id': '"' + i + '"', 'state': data[i].state ,'path':data[i].path};
+                    temp = this.convertToTreeData(data, i);
+                    if (temp.length > 0) {
+                        obj.children = temp;
+                    }
+                    result.push(obj);
+                }
+            }
+            return result
+        }
+
+        var input1 = document.getElementById("input1");
+        var input2 = document.getElementById("input2");
+        var input3 = document.getElementById("input3");
+        var input4 = document.getElementById("input4");
+        var input5 = document.getElementById("input5");
+        var input6 = document.getElementById("input6");
+        var input7 = document.getElementById("input7");
+        var input8 = document.getElementById("input8");
+        var input9 = document.getElementById("input9");
+        var output1 = document.getElementById("output1");
+        var output2 = document.getElementById("output2");
+        var output3 = document.getElementById("output3");
+        var output4 = document.getElementById("output4");
+        var output5 = document.getElementById("output5");
+        var output6 = document.getElementById("output6");
+        var output7 = document.getElementById("output7");
+        var output8 = document.getElementById("output8");
+        var output9 = document.getElementById("output9");
+        var resultPath1 = [];
+        var node_num = 0;
+        var frontier = [];
+        var aaa = $('input[name=aaa]:checked').val();
+        const container = document.getElementById('container');
+        function get_result() {
+            container.innerHTML='';
+            $.ajax({
+                url: "/2",
+                data: {
+                    "input1": input1.value, "input2": input2.value, "input3": input3.value, "input4": input4.value, "input5": input5.value, "input6": input6.value, "input7": input7.value, "input8": input8.value, "input9": input9.value,
+                    "output1": output1.value, "output2": output2.value, "output3": output3.value, "output4": output4.value, "output5": output5.value, "output6": output6.value, "output7": output7.value, "output8": output8.value, "output9": output9.value,
+                    "aaa": aaa
+                },
+                type: "post",
+                success: function (data) {
+                    //console.log(data);
+                    //console.log(data["data"]);
+                    //console.log(data["data"][0][0]);
+                    if (data["data"][0] == null) {
+                        alert("问题不可解！请重新输入");
+
+                    }
+                    else {
+                        frontier = data["frontier"];
+                        node_num = data["node_num"];
+                        resultPath1 = data["data"];
+                        document.getElementById("node_num").innerText = node_num;
+                        document.getElementById("node_num2").innerText = data["node_num2"];
+                        document.getElementById("cost_time").innerText = data["time"];
+                        console.log(frontier);
+
+                        const treeData1 = convertToTreeData(frontier, -1)
+                        const treeData = treeData1[0]
+                        console.log(treeData)
+
+                        
+                        const width = container.scrollWidth;
+                        const height = container.scrollHeight || 1800;
+                        const graph = new G6.TreeGraph({
+                            container: 'container',
+                            width,
+                            height,
+                            linkCenter: true,
+                            modes: {
+                                default: [
+                                    {
+                                        type: 'collapse-expand',
+                                        onChange: function onChange(item, collapsed) {
+                                            const data = item.getModel();
+                                            data.collapsed = collapsed;
+
+                                            return true;
+                                        },
+                                    },
+                                    'drag-canvas',
+                                    'zoom-canvas',
+                                    {
+                                        type: 'tooltip',
+                                        formatText(model) {
+                                            //alert(model.id);
+
+                                            return 0;
+                                        },
+                                        offset: 15,
+                                    },
+                                ],
+                            },
+                            defaultNode: {
+                                size: 26,
+                                anchorPoints: [
+                                    [0, 0.5],
+                                    [1, 0.5],
+                                ],
+                            },
+                            defaultEdge: {
+                                type: 'cubic-vertical',
+                            },
+                            layout: {
+                                type: 'compactBox',
+                                direction: 'TB',
+                                getId: function getId(d) {
+                                    return d.id;
+                                },
+                                getHeight: function getHeight() {
+                                    return 16;
+                                },
+                                getWidth: function getWidth() {
+                                    return 16;
+                                },
+                                getVGap: function getVGap() {
+                                    return 80;
+                                },
+                                getHGap: function getHGap() {
+                                    return 20;
+                                },
+                            },
+                        });
+
+                        graph.node(function (node) {
+
+                            let position = 'right';
+                            let rotate = 0;
+                            if (!node.children) {
+                                position = 'bottom';
+                                rotate = Math.PI / 2;
+                            }
+                            if (node.path == 1) {
+                                return {
+                                    label: node.id,
+                                    labelCfg: {
+                                        position,
+                                        offset: 5,
+                                        style: {
+                                            rotate,
+                                            textAlign: 'start',
+                                        },
+                                    },
+                                    style: {
+                                        fill: 'red',
+                                        stroke: '#ea7171'
+                                    }
+                                };
+                            }
+                            else {
+                                return {
+                                    label: node.id,
+                                    labelCfg: {
+                                        position,
+                                        offset: 5,
+                                        style: {
+                                            rotate,
+                                            textAlign: 'start',
+                                        },
+                                    },
+                                };
+                            }
+                        });
+
+                        graph.on('node:mouseenter', function (e) {
+                            //console.log(e.item._cfg.model.state);
+                            console.log(e);
+                            document.getElementById("infor").style.display = "block";
+                            sss=e.clientY+document.documentElement.scrollTop;
+                            document.getElementById("infor").style.marginTop=sss+"px";
+                            document.getElementById("infor").style.marginLeft=e.clientX+"px";
+                            document.getElementById("infor1").innerHTML=e.item._cfg.model.state[0][0];
+                            document.getElementById("infor2").innerHTML=e.item._cfg.model.state[0][1];
+                            document.getElementById("infor3").innerHTML=e.item._cfg.model.state[0][2];
+                            document.getElementById("infor4").innerHTML=e.item._cfg.model.state[1][0];
+                            document.getElementById("infor5").innerHTML=e.item._cfg.model.state[1][1];
+                            document.getElementById("infor6").innerHTML=e.item._cfg.model.state[1][2];
+                            document.getElementById("infor7").innerHTML=e.item._cfg.model.state[2][0];
+                            document.getElementById("infor8").innerHTML=e.item._cfg.model.state[2][1];
+                            document.getElementById("infor9").innerHTML=e.item._cfg.model.state[2][2];
+                        });
+
+                        graph.on('node:mouseleave', function (e) {
+                            document.getElementById("infor").style.display = "none";
+
+                        });
+                        graph.data(treeData);
+                        graph.render();
+                        graph.fitView();
+
+                        var option = {
+                            startNode: data["data"][0],
+                            animateTime: '300'
+                        };
+                        var eightPuzzles = new EightPuzzles(option);
+                        eightPuzzles.calDom(eightPuzzles.startNode);
+                        setTimeout(function () {
+                            eightPuzzles.showDomMove(resultPath1)
+                        }, 500);
+                        setTimeout(function () {
+                            $('.div').css({
+                                'transition': 'all ' + option.animateTime + 'ms',
+                                '-moz-transition': 'all ' + option.animateTime + 'ms', /* Firefox 4 */
+                                '-webkit-transition': 'all ' + option.animateTime + 'ms', /* Safari 和 Chrome */
+                                '-o-transition': 'all ' + option.animateTime + 'ms' /* Opera */
+                            })
+                        }, 0);
+                    }
+
+                }
+            })
+        }
+    </script>
+
+</body>
+
+</html>
